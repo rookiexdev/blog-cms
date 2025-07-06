@@ -1,4 +1,11 @@
+"use client";
+
+import { loginUser } from "@/services";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useRef } from "react";
+import toast from "react-hot-toast";
+
 
 export default function LoginPage() {
   return (
@@ -9,6 +16,36 @@ export default function LoginPage() {
 }
 
 function Container() {
+  const router = useRouter();
+
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    const username = usernameRef.current?.value;
+    const password = passwordRef.current?.value;
+    console.log(username, password);
+    if (username && password) {
+      loginUser(username, password)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.message === "Login successful") {
+            toast.success("Login successful");
+            router.push("/");
+          } else {
+            toast.error(data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("Login failed");
+        });
+    } else {
+      toast.error("Please fill all the fields");
+    }
+  }
+
   return (
     <div className="w-4xl flex flex-col max-w-md p-6 rounded-md sm:p-10 dark:bg-gray-50 dark:text-gray-800">
       <div className="mb-8 text-center">
@@ -17,17 +54,17 @@ function Container() {
           Login to access your account
         </p>
       </div>
-      <form action="" className="space-y-12">
+      <form onSubmit={handleSubmit} className="space-y-12">
         <div className="space-y-4">
           <div>
             <label htmlFor="email" className="block mb-2 text-sm">
               Username
             </label>
             <input
-              type="email"
-              name="email"
-              id="email"
+              type="text"
+              name="username"
               placeholder="johndoe"
+              ref={usernameRef}
               className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
             />
           </div>
@@ -40,8 +77,8 @@ function Container() {
             <input
               type="password"
               name="password"
-              id="password"
               placeholder="******"
+              ref={passwordRef}
               className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
             />
           </div>
@@ -49,7 +86,7 @@ function Container() {
         <div className="space-y-2">
           <div>
             <button
-              type="button"
+              type="submit"
               className="w-full px-8 py-3 font-semibold rounded-md dark:text-gray-50 dark:bg-gray-600 cursor-pointer"
             >
               Login
