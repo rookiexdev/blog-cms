@@ -1,6 +1,9 @@
 "use client";
+import { signupUser } from "@/services";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useRef } from "react";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
   return (
@@ -11,13 +14,33 @@ export default function SignupPage() {
 }
 
 function Container() {
+  const router = useRouter();
+
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const username = usernameRef.current?.value;
     const password = passwordRef.current?.value;
-    console.log(username, password);
+
+    if (username && password) {
+      signupUser(username, password)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.message === "Signup successful") {
+            toast.success("Signup successful");
+            router.push("/login");
+          } else {
+            toast.error(data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("Signup failed");
+        });
+    } else {
+      toast.error("Please fill all the fields");
+    }
   }
 
   return (

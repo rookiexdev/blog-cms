@@ -27,7 +27,7 @@ function Container() {
               type="email"
               name="email"
               id="email"
-              placeholder="john.doe"
+              placeholder="johndoe"
               className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
             />
           </div>
@@ -50,7 +50,7 @@ function Container() {
           <div>
             <button
               type="button"
-              className="w-full px-8 py-3 font-semibold rounded-md dark:text-gray-50 dark:bg-default-600"
+              className="w-full px-8 py-3 font-semibold rounded-md dark:text-gray-50 dark:bg-gray-600 cursor-pointer"
             >
               Login
             </button>
