@@ -1,189 +1,132 @@
+"use client";
+
+import { getAllBlogs } from "@/services";
+import { Blog } from "@/types";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
 export default function HomePage() {
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+
+  useEffect(() => {
+    getAllBlogs()
+      .then((res) => res.json())
+      .then((data) => {
+        setBlogs(data);
+        console.log(data);
+      });
+  }, []);
+
   return (
     <div>
       <section className="">
         <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
-          <a
-            rel="noopener noreferrer"
-            href="#"
-            className="block max-w-sm gap-3 mx-auto sm:max-w-full group hover:no-underline focus:no-underline lg:grid lg:grid-cols-12 dark:bg-gray-50"
-          >
-            <img
-              src="https://source.unsplash.com/random/480x360"
-              alt=""
-              className="object-cover w-full h-64 rounded sm:h-96 lg:col-span-7 dark:bg-gray-500"
-            />
-            <div className="p-6 space-y-2 lg:col-span-5">
-              <h3 className="text-2xl font-semibold sm:text-4xl group-hover:underline group-focus:underline">
-                Noster tincidunt reprimique ad pro
-              </h3>
-              <span className="text-xs dark:text-gray-600">
-                February 19, 2021
-              </span>
-              <p>
-                Ei delenit sensibus liberavisse pri. Quod suscipit no nam. Est
-                in graece fuisset, eos affert putent doctus id.
-              </p>
-            </div>
-          </a>
+          {blogs.length > 0 &&
+            blogs.slice(0, 1).map((blog, index) => (
+              <article
+                key={index}
+                className="rounded-lg border border-gray-100 bg-white p-4 shadow-xs transition hover:shadow-lg sm:p-6 dark:border-gray-800 dark:bg-gray-900 dark:shadow-gray-700/25 px-4 pt-12 pb-4 cursor-pointer"
+              >
+                <span className="inline-block rounded-sm bg-blue-600 p-2 text-white dark:bg-blue-700">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="size-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
+                    />
+                  </svg>
+                </span>
+
+                <Link href={`/blogs/${blog?.id}`}>
+                  <h3 className="mt-0.5 text-lg font-medium text-gray-900 dark:text-white">
+                    {blog?.title}
+                  </h3>
+                </Link>
+
+                <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500 dark:text-gray-400">
+                  {blog?.content.slice(0, 50)} ...
+                </p>
+
+                <Link
+                  href={`/blogs/${blog?.id}`}
+                  className="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600"
+                >
+                  Read more
+                  <span
+                    aria-hidden="true"
+                    className="block transition-all group-hover:ms-0.5 rtl:rotate-180"
+                  >
+                    &rarr;
+                  </span>
+                </Link>
+              </article>
+            ))}
           <div className="grid justify-center grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <a
-              rel="noopener noreferrer"
-              href="#"
-              className="max-w-sm mx-auto group hover:no-underline focus:no-underline dark:bg-gray-50"
-            >
-              <img
-                role="presentation"
-                className="object-cover w-full rounded h-44 dark:bg-gray-500"
-                src="https://source.unsplash.com/random/480x360?1"
-              />
-              <div className="p-6 space-y-2">
-                <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
-                  In usu laoreet repudiare legendos
-                </h3>
-                <span className="text-xs dark:text-gray-600">
-                  January 21, 2021
-                </span>
-                <p>
-                  Mei ex aliquid eleifend forensibus, quo ad dicta apeirian
-                  neglegentur, ex has tantas percipit perfecto. At per tempor
-                  albucius perfecto, ei probatus consulatu patrioque mea, ei
-                  vocent delicata indoctum pri.
-                </p>
-              </div>
-            </a>
-            <a
-              rel="noopener noreferrer"
-              href="#"
-              className="max-w-sm mx-auto group hover:no-underline focus:no-underline dark:bg-gray-50"
-            >
-              <img
-                role="presentation"
-                className="object-cover w-full rounded h-44 dark:bg-gray-500"
-                src="https://source.unsplash.com/random/480x360?2"
-              />
-              <div className="p-6 space-y-2">
-                <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
-                  In usu laoreet repudiare legendos
-                </h3>
-                <span className="text-xs dark:text-gray-600">
-                  January 22, 2021
-                </span>
-                <p>
-                  Mei ex aliquid eleifend forensibus, quo ad dicta apeirian
-                  neglegentur, ex has tantas percipit perfecto. At per tempor
-                  albucius perfecto, ei probatus consulatu patrioque mea, ei
-                  vocent delicata indoctum pri.
-                </p>
-              </div>
-            </a>
-            <a
-              rel="noopener noreferrer"
-              href="#"
-              className="max-w-sm mx-auto group hover:no-underline focus:no-underline dark:bg-gray-50"
-            >
-              <img
-                role="presentation"
-                className="object-cover w-full rounded h-44 dark:bg-gray-500"
-                src="https://source.unsplash.com/random/480x360?3"
-              />
-              <div className="p-6 space-y-2">
-                <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
-                  In usu laoreet repudiare legendos
-                </h3>
-                <span className="text-xs dark:text-gray-600">
-                  January 23, 2021
-                </span>
-                <p>
-                  Mei ex aliquid eleifend forensibus, quo ad dicta apeirian
-                  neglegentur, ex has tantas percipit perfecto. At per tempor
-                  albucius perfecto, ei probatus consulatu patrioque mea, ei
-                  vocent delicata indoctum pri.
-                </p>
-              </div>
-            </a>
-            <a
-              rel="noopener noreferrer"
-              href="#"
-              className="max-w-sm mx-auto group hover:no-underline focus:no-underline dark:bg-gray-50 hidden sm:block"
-            >
-              <img
-                role="presentation"
-                className="object-cover w-full rounded h-44 dark:bg-gray-500"
-                src="https://source.unsplash.com/random/480x360?4"
-              />
-              <div className="p-6 space-y-2">
-                <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
-                  In usu laoreet repudiare legendos
-                </h3>
-                <span className="text-xs dark:text-gray-600">
-                  January 24, 2021
-                </span>
-                <p>
-                  Mei ex aliquid eleifend forensibus, quo ad dicta apeirian
-                  neglegentur, ex has tantas percipit perfecto. At per tempor
-                  albucius perfecto, ei probatus consulatu patrioque mea, ei
-                  vocent delicata indoctum pri.
-                </p>
-              </div>
-            </a>
-            <a
-              rel="noopener noreferrer"
-              href="#"
-              className="max-w-sm mx-auto group hover:no-underline focus:no-underline dark:bg-gray-50 hidden sm:block"
-            >
-              <img
-                role="presentation"
-                className="object-cover w-full rounded h-44 dark:bg-gray-500"
-                src="https://source.unsplash.com/random/480x360?5"
-              />
-              <div className="p-6 space-y-2">
-                <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
-                  In usu laoreet repudiare legendos
-                </h3>
-                <span className="text-xs dark:text-gray-600">
-                  January 25, 2021
-                </span>
-                <p>
-                  Mei ex aliquid eleifend forensibus, quo ad dicta apeirian
-                  neglegentur, ex has tantas percipit perfecto. At per tempor
-                  albucius perfecto, ei probatus consulatu patrioque mea, ei
-                  vocent delicata indoctum pri.
-                </p>
-              </div>
-            </a>
-            <a
-              rel="noopener noreferrer"
-              href="#"
-              className="max-w-sm mx-auto group hover:no-underline focus:no-underline dark:bg-gray-50 hidden sm:block"
-            >
-              <img
-                role="presentation"
-                className="object-cover w-full rounded h-44 dark:bg-gray-500"
-                src="https://source.unsplash.com/random/480x360?6"
-              />
-              <div className="p-6 space-y-2">
-                <h3 className="text-2xl font-semibold group-hover:underline group-focus:underline">
-                  In usu laoreet repudiare legendos
-                </h3>
-                <span className="text-xs dark:text-gray-600">
-                  January 26, 2021
-                </span>
-                <p>
-                  Mei ex aliquid eleifend forensibus, quo ad dicta apeirian
-                  neglegentur, ex has tantas percipit perfecto. At per tempor
-                  albucius perfecto, ei probatus consulatu patrioque mea, ei
-                  vocent delicata indoctum pri.
-                </p>
-              </div>
-            </a>
+            {blogs.length > 1 &&
+              blogs.slice(1).map((blog, index) => (
+                <article
+                  key={index}
+                  className="rounded-lg border border-gray-100 bg-white p-4 shadow-xs transition hover:shadow-lg sm:p-6 dark:border-gray-800 dark:bg-gray-900 dark:shadow-gray-700/25 cursor-pointer"
+                >
+                  <span className="inline-block rounded-sm bg-blue-600 p-2 text-white dark:bg-blue-700">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="size-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                      <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
+                      />
+                    </svg>
+                  </span>
+
+                  <Link href={`/blogs/${blog?.id}`}>
+                    <h3 className="mt-0.5 text-lg font-medium text-gray-900 dark:text-white">
+                      {blog?.title}
+                    </h3>
+                  </Link>
+
+                  <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500 dark:text-gray-400">
+                    {blog?.content.slice(0, 50)} ...
+                  </p>
+
+                  <Link
+                    href={`/blogs/${blog?.id}`}
+                    className="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600"
+                  >
+                    Read more
+                    <span
+                      aria-hidden="true"
+                      className="block transition-all group-hover:ms-0.5 rtl:rotate-180"
+                    >
+                      &rarr;
+                    </span>
+                  </Link>
+                </article>
+              ))}
           </div>
           <div className="flex justify-center">
             <button
               type="button"
-              className="px-6 py-3 text-sm rounded-md hover:underline dark:bg-gray-50 dark:text-gray-600"
+              className="px-6 py-3 text-sm rounded-md hover:underline dark:bg-gray-50 dark:text-gray-600 cursor-pointer"
             >
-              Load more posts...
+              Load more blogs...
             </button>
           </div>
         </div>
