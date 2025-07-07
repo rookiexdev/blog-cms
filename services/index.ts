@@ -74,3 +74,17 @@ export function deleteBlog(id: string) {
     method: "DELETE",
   });
 }
+
+// Get user
+export function getUser() {
+  return fetch("/api/user", {
+    method: "GET",
+  });
+}
+
+// logout user
+export function logoutUser() {
+  return fetch("/api/logout", {
+    method: "POST",
+  });
+}

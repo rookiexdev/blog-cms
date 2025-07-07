@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function HomePage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     getAllBlogs()
@@ -14,8 +15,19 @@ export default function HomePage() {
       .then((data) => {
         setBlogs(data);
         console.log(data);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin dark:border-default-600" />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -121,14 +133,14 @@ export default function HomePage() {
                 </article>
               ))}
           </div>
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <button
               type="button"
               className="px-6 py-3 text-sm rounded-md hover:underline dark:bg-gray-50 dark:text-gray-600 cursor-pointer"
             >
               Load more blogs...
             </button>
-          </div>
+          </div> */}
         </div>
       </section>
     </div>

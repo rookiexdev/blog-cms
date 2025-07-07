@@ -1,10 +1,54 @@
 "use client";
 
+import { getUser, logoutUser } from "@/services";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<{ username: string } | null>(null);
+
+  function handleLogout() {
+    try {
+      logoutUser()
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.logout) {
+            setUser(null);
+            toast.success("Logged out successfully");
+          } else {
+            toast.error(data.message);
+          }
+        });
+    } catch (err) {
+      toast.error("Failed to logout");
+    }
+  }
+
+  useEffect(() => {
+    const authInfo = () => {
+      try {
+        getUser()
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.isAuthenticated) {
+              setUser(data.user);
+            } else {
+              setUser(null);
+            }
+          }).catch(() => {
+            setUser(null);
+            toast.error("Failed to fetch user info");
+          })
+      } catch (err) {
+        toast.error("Failed to fetch user info");
+        setUser(null);
+      }
+    };
+
+    authInfo();
+  }, []);
 
   return (
     <header className={`flex w-full items-center bg-[#0a0a0a] text-gray-100`}>
@@ -12,16 +56,8 @@ export default function Navbar() {
         <div className="relative -mx-4 flex items-center justify-between">
           <div className="w-60 max-w-full px-4">
             <Link href="/" className="block w-full py-5">
-              <img
-                src="/logo.png"
-                alt="logo"
-                className="dark:hidden"
-              />
-              <img
-                src="/logo.png"
-                alt="logo"
-                className="hidden dark:block"
-              />
+              <img src="/logo.png" alt="logo" className="dark:hidden" />
+              <img src="/logo.png" alt="logo" className="hidden dark:block" />
             </Link>
           </div>
           <div className="flex w-full items-center justify-between px-4">
@@ -45,24 +81,41 @@ export default function Navbar() {
               >
                 <ul className="block lg:flex">
                   <ListItem href="/">Home</ListItem>
-                  <ListItem href="/write-blog">Write Blog</ListItem>
+                  {/* <ListItem href="/write-blog">Write Blog</ListItem> */}
                 </ul>
               </nav>
             </div>
             <div className="hidden justify-end pr-16 sm:flex lg:pr-0">
-              <Link
-                href="/login"
-                className="px-7 py-3 text-base font-medium text-dark hover:text-primary dark:text-white"
-              >
-                Login
-              </Link>
+              {!user ? (
+                <>
+                  <Link
+                    href="/login"
+                    className="px-7 py-3 text-base font-medium text-dark hover:text-primary dark:text-white"
+                  >
+                    Login
+                  </Link>
 
-              <Link
-                href="/signup"
-                className="rounded-md bg-primary px-7 py-3 text-base font-medium text-white hover:bg-primary/90"
-              >
-                Sign Up
-              </Link>
+                  <Link
+                    href="/signup"
+                    className="rounded-md bg-primary px-7 py-3 text-base font-medium text-white hover:bg-primary/90"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <span>Hello, {user.username}</span>
+                  <Link href="/write-blog" className="text-base font-medium">
+                    Write Blog
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-red-600 text-base font-medium cursor-pointer"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
