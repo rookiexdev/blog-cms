@@ -4,6 +4,7 @@ import { getAllBlogs } from "@/services";
 import { Blog } from "@/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Loading from "./Loading";
 
 export default function HomePage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -23,8 +24,8 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin dark:border-default-600" />
+      <div className="flex justify-center mt-50">
+        <Loading />
       </div>
     );
   }
@@ -37,7 +38,7 @@ export default function HomePage() {
             blogs.slice(0, 1).map((blog, index) => (
               <article
                 key={index}
-                className="rounded-lg border border-gray-100 bg-white p-4 shadow-xs transition hover:shadow-lg sm:p-6 dark:border-gray-800 dark:bg-gray-900 dark:shadow-gray-700/25 px-4 pt-12 pb-4 cursor-pointer"
+                className="rounded-lg border border-gray-100 bg-white p-4 shadow-xs transition hover:shadow-lg sm:p-6 dark:border-gray-800 dark:bg-gray-900 dark:shadow-gray-700/25 px-4 pt-12 pb-4"
               >
                 <span className="inline-block rounded-sm bg-blue-600 p-2 text-white dark:bg-blue-700">
                   <svg
@@ -59,18 +60,21 @@ export default function HomePage() {
                 </span>
 
                 <Link href={`/blogs/${blog?.id}`}>
-                  <h3 className="mt-0.5 text-lg font-medium text-gray-900 dark:text-white">
+                  <h3 className="mt-0.5 text-lg font-medium text-gray-200 cursor-pointer">
                     {blog?.title}
                   </h3>
                 </Link>
+                <h5 className="mt-0.5 text-lg font-medium text-gray-600 ">
+                  Author: {blog?.author?.username}
+                </h5>
 
                 <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500 dark:text-gray-400">
-                  {blog?.content.slice(0, 50)} ...
+                  {blog?.content.slice(0, 150)} ...
                 </p>
 
                 <Link
                   href={`/blogs/${blog?.id}`}
-                  className="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600"
+                  className="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600 cursor-pointer"
                 >
                   Read more
                   <span
@@ -87,7 +91,7 @@ export default function HomePage() {
               blogs.slice(1).map((blog, index) => (
                 <article
                   key={index}
-                  className="rounded-lg border border-gray-100 bg-white p-4 shadow-xs transition hover:shadow-lg sm:p-6 dark:border-gray-800 dark:bg-gray-900 dark:shadow-gray-700/25 cursor-pointer"
+                  className="rounded-lg border border-gray-100 bg-white p-4 shadow-xs transition hover:shadow-lg sm:p-6 dark:border-gray-800 dark:bg-gray-900 dark:shadow-gray-700/25"
                 >
                   <span className="inline-block rounded-sm bg-blue-600 p-2 text-white dark:bg-blue-700">
                     <svg
@@ -113,6 +117,9 @@ export default function HomePage() {
                       {blog?.title}
                     </h3>
                   </Link>
+                  <h5 className="mt-0.5 text-lg font-medium text-gray-600 ">
+                    Author: {blog?.author?.username}
+                  </h5>
 
                   <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500 dark:text-gray-400">
                     {blog?.content.slice(0, 50)} ...
