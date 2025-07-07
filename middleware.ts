@@ -1,32 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
   const { pathname } = request.nextUrl;
 
-  const isAuthPage = pathname === "/login" || pathname === "/signup";
   const isProtectedRoute =
-    pathname.startsWith("/write-blog") || pathname.startsWith("/api/blogs");
+    pathname.startsWith("/write-blog") || pathname.startsWith("/api/blogs/");
 
-  if (isAuthPage && token) {
-    try {
-      jwt.verify(token, JWT_SECRET);
-      return NextResponse.redirect(new URL("/", request.url));
-    } catch {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+  const isPublicRoute =
+    pathname.startsWith("/login") || pathname.startsWith("/signup");
+
+  if (isPublicRoute) {
+    return NextResponse.next();
   }
 
-  if (isProtectedRoute && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (isProtectedRoute) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    try {
+      const secret = new TextEncoder().encode(JWT_SECRET);
+      await jwtVerify(token, secret);
+    } catch (err) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/login", "/signup", "/write-blog", "/api/blogs/:path*"],
+  matcher: ["/write-blog", "/api/:path*"],
 };

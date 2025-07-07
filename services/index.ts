@@ -1,6 +1,6 @@
 // Signup
 export function signupUser(username: string, password: string) {
-  return fetch("/api/signup", {
+  return fetch("/api/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

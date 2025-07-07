@@ -45,6 +45,7 @@ export default function Navbar() {
               >
                 <ul className="block lg:flex">
                   <ListItem href="/">Home</ListItem>
+                  <ListItem href="/write-blog">Write Blog</ListItem>
                 </ul>
               </nav>
             </div>
